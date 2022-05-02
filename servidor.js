@@ -1,12 +1,13 @@
-var http = requiere('http');
-var fs = ('fs');
-var path = requiere ('path');
+var http = require('http');
+var fs = require('fs');
+var path = require ('path');
 
 http.createServer(function (request, response) {
     console.log('request ', request.url);
     var filePath = '.' + request.url;
     if (filePath == './'){
         filePath = './index.html';
+    }
         var extname = String(path.extname(filePath)).toLowerCase();
         var contentType = 'text/html';
         var mimeTypes = {
@@ -15,15 +16,15 @@ http.createServer(function (request, response) {
             '.css': 'text/css',
             '.jpg': 'image/jpg'
         }
-    }
-});
+
+contentType = mimeTypes[extname] || 'application/octet-stream';
 
 fs.readFile(filePath, function(error, content) {
     if(error) {
         if(error.code == 'ENOENT'){
             fs.readFile('./404.html', function(error, content) {
                 response.writeHead(200, { 'Content-Type': contentType});
-                responde.end(content, 'utf-8');
+                response.end(content, 'utf-8');
             });
         }
         else {
@@ -34,6 +35,9 @@ fs.readFile(filePath, function(error, content) {
     }
     else{
         response.writeHead(200, {'Content-Type': contentType});
-        responde.end(content, 'utf-8');
-    }
+        response.end(content, 'utf-8');
+    };
 });
+
+}).listen(3000);
+console.log('Server running at http://192.168.50.193:3000');
